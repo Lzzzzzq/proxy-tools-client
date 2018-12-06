@@ -1,6 +1,11 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+import socketInit from './lib/socket'
+
+const port = 3000
+
+socketInit(port)
 
 /**
  * Set `__static` path to static files in production
@@ -20,12 +25,12 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 700,
     useContentSize: true,
-    width: 1000
+    width: 1200
   })
 
-  mainWindow.loadURL(winURL)
+  mainWindow.loadURL(winURL + '?port=' + port)
 
   mainWindow.on('closed', () => {
     mainWindow = null
