@@ -7,19 +7,13 @@
         v-model="collapsed"
       >
         <div class="logo" />
-        <a-menu theme="dark" mode="inline" :defaultSelectedKeys="['1']">
-          <a-menu-item v-for="(item, index) in nav" :key="index">
-            <a-icon :type="item.icon" />
-            <span>{{item.name}}</span>
+        <a-menu theme="dark" mode="inline" :selectedKeys="[this.$route.path]">
+          <a-menu-item v-for="(item, index) in nav" :key="item.path">
+            <router-link :to="item.path">
+              <a-icon :type="item.icon" />
+              <span>{{item.name}}</span>
+            </router-link>
           </a-menu-item>
-          <!-- <a-menu-item key="2">
-            <a-icon type="video-camera" />
-            <span>nav 2</span>
-          </a-menu-item>
-          <a-menu-item key="3">
-            <a-icon type="upload" />
-            <span>nav 3</span>
-          </a-menu-item> -->
         </a-menu>
       </a-layout-sider>
       <a-layout>
@@ -31,7 +25,9 @@
           />
         </a-layout-header>
         <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', overflow: 'auto' }">
-          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -47,12 +43,18 @@
         nav: [
           {
             name: 'hosts管理',
-            icon: 'inbox'
+            icon: 'inbox',
+            path: '/hostsMgr'
+          }, {
+            name: '首页',
+            icon: 'inbox',
+            path: '/'
           }
         ]
       }
     },
     mounted: function () {
+      console.log(this.$route)
       this.$socket.on('welcome', () => {
         console.log('welcome')
       })

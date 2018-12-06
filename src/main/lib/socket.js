@@ -7,6 +7,8 @@ const socket = require('socket.io')
 const init = (port) => {
   const app = http.createServer()
   const io = socket(app)
+  io.set('transports', ['websocket', 'xhr-polling', 'jsonp-polling', 'htmlfile', 'flashsocket'])
+  io.set('origins', '*:*')
   app.listen(port)
 
   app.on('request', httpProxy)
@@ -17,7 +19,6 @@ const init = (port) => {
     socket.on('getAllHosts', async () => {
       try {
         let hosts = await api.getAllHosts()
-        console.log(hosts)
         socket.emit('allHosts', hosts)
       } catch (e) {
         console.error(e)

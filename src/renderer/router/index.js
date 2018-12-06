@@ -6,7 +6,10 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/'
+    },
+    {
+      path: '/hostsMgr',
       name: 'hosts-mgr',
       component: require('@/pages/hostsMgr').default
     },
