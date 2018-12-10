@@ -3,7 +3,7 @@
 import { app, BrowserWindow } from 'electron'
 import socketInit from './lib/socket'
 
-const port = 3000
+const port = 4000
 
 socketInit(port)
 

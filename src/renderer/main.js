@@ -8,7 +8,7 @@ import router from './router'
 import store from './store'
 import io from 'socket.io-client'
 
-const socket = io.connect('http://localhost:3000', {transports: ['websocket', 'xhr-polling', 'jsonp-polling']})
+const socket = io.connect('http://localhost:4000', {transports: ['websocket', 'xhr-polling', 'jsonp-polling']})
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
