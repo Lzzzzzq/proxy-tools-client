@@ -1,59 +1,64 @@
 <template>
   <div id="app">
-    <a-layout id="components-layout-demo-custom-trigger">
-      <a-layout-sider
-        :trigger="null"
-        collapsible
-        v-model="collapsed"
-      >
-        <div class="logo" />
-        <a-menu theme="dark" mode="inline" :selectedKeys="[this.$route.path]">
-          <a-menu-item v-for="(item, index) in nav" :key="item.path">
-            <router-link :to="item.path">
-              <a-icon :type="item.icon" />
-              <span>{{item.name}}</span>
-            </router-link>
-          </a-menu-item>
-        </a-menu>
-      </a-layout-sider>
-      <a-layout>
-        <a-layout-header style="background: #fff; padding: 0">
-          <a-icon
-            class="trigger"
-            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-            @click="()=> collapsed = !collapsed"
-          />
-        </a-layout-header>
-        <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', overflow: 'auto' }">
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
-        </a-layout-content>
+    <a-locale-provider :locale="locale">
+      <a-layout id="components-layout-demo-custom-trigger">
+        <a-layout-sider
+          :trigger="null"
+          collapsible
+          v-model="collapsed"
+        >
+          <div class="logo" />
+          <a-menu theme="dark" mode="inline" :selectedKeys="[this.$route.path]">
+            <a-menu-item v-for="(item, index) in nav" :key="item.path">
+              <router-link :to="item.path">
+                <a-icon :type="item.icon" />
+                <span>{{item.name}}</span>
+              </router-link>
+            </a-menu-item>
+          </a-menu>
+        </a-layout-sider>
+        <a-layout>
+          <a-layout-header style="background: #fff; padding: 0">
+            <a-icon
+              class="trigger"
+              :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+              @click="()=> collapsed = !collapsed"
+            />
+          </a-layout-header>
+          <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', overflow: 'auto' }">
+            <keep-alive>
+              <router-view></router-view>
+            </keep-alive>
+          </a-layout-content>
+        </a-layout>
       </a-layout>
-    </a-layout>
+    </a-locale-provider>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'proxy-tools-client',
-    data () {
-      return {
-        collapsed: false,
-        nav: [
-          {
-            name: '首页',
-            icon: 'inbox',
-            path: '/'
-          }, {
-            name: 'hosts管理',
-            icon: 'inbox',
-            path: '/hostsMgr'
-          }
-        ]
-      }
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
+
+export default {
+  name: 'proxy-tools-client',
+  data () {
+    return {
+      collapsed: false,
+      locale: zhCN,
+      nav: [
+        {
+          name: '首页',
+          icon: 'inbox',
+          path: '/'
+        }, {
+          name: 'hosts管理',
+          icon: 'inbox',
+          path: '/hostsMgr'
+        }
+      ]
     }
   }
+}
 </script>
 
 <style lang='less'>

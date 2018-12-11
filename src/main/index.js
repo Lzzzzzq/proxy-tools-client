@@ -2,10 +2,7 @@
 
 import { app, BrowserWindow } from 'electron'
 import socketInit from './lib/socket'
-
-const port = 4000
-
-socketInit(port)
+import portfinder from 'portfinder'
 
 /**
  * Set `__static` path to static files in production
@@ -25,28 +22,41 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 700,
+    height: 768,
     useContentSize: true,
-    width: 1200
+    width: 1280
   })
 
-  mainWindow.loadURL(winURL + '?port=' + port)
+  mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
 }
 
-app.on('ready', createWindow)
+const port = 3000
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+portfinder.basePort = port
+portfinder.getPort(function (err, port) {
+  if (err) { throw err }
 
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
+  console.log(`Port -> ${port}`)
+
+  process.env.socketPort = port
+
+  socketInit(port)
+
+  app.on('ready', createWindow)
+
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+
+  app.on('activate', () => {
+    if (mainWindow === null) {
+      createWindow()
+    }
+  })
 })

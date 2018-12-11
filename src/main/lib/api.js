@@ -1,7 +1,7 @@
-import Data from './data'
+import data from './data'
 import md5 from 'md5'
 
-let data = new Data()
+// let data = new Data()
 
 // 获取全部hosts
 export const getAllHosts = () => {

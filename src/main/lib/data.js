@@ -60,4 +60,6 @@ class Data {
   }
 }
 
-export default Data
+const data = new Data()
+
+export default data
