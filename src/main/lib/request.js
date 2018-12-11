@@ -17,6 +17,7 @@ const request = (cReq, cRes) => {
   for (let item in hosts) {
     if (hosts[item].address === options.hostname && hosts[item].active) {
       options.hostname = hosts[item].ip
+      console.log('http hosts change')
     }
   }
 

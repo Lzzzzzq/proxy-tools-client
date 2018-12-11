@@ -10,6 +10,7 @@ const connect = (cReq, cSock) => {
   for (let item in hosts) {
     if (hosts[item].address === hostname && hosts[item].active) {
       hostname = hosts[item].ip
+      console.log('https hosts change')
     }
   }
 
