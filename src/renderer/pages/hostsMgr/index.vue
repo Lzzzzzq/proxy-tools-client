@@ -69,10 +69,11 @@
         :maskClosable="false"
         @cancel="handleCancelImport"
       >
-        <a-textarea placeholder="Basic usage" :rows="4"/>
+        <a-alert message="相同的 host 将不会被导入" type="warning" showIcon />
+        <a-textarea placeholder="请将hosts文件内容粘贴到此处" v-model="importHosts" :rows="8" style="margin-top: 20px"/>
         <template slot="footer">
           <a-button key="back" @click="handleCancelImport">取消</a-button>
-          <a-button key="submit" type="primary" :disabled="!editAddress || !editIp"
+          <a-button key="submit" type="primary" :disabled="!importHosts"
           @click="handleClickImportModalOk">
             添加
           </a-button>
@@ -89,7 +90,14 @@
       </span>
       <span slot="title"></span>
       <span slot="tags" slot-scope="item">
-        <a-tag color="#2db7f5" v-for="(item, index) in item.tags" :key="`${item}${index}`">{{item}}</a-tag>
+        <a-tag 
+          color="#2db7f5" 
+          v-if="item && item.tags"
+          v-for="(tagItem, index) in item.tags" 
+          :key="`${tagItem}${index}`"
+        >
+          {{tagItem}}
+        </a-tag>
       </span>
       <span slot="action" slot-scope="text, item">
         <a-button type="danger" style="margin-right: 20px;" @click="handleDeleteHost(item.id)">删除</a-button>
@@ -130,6 +138,9 @@ export default {
       editIp: '',
       editTags: [],
 
+      // 批量引入 hosts modal 中输入框内容
+      importHosts: '',
+
       // 所有hosts数据
       hosts: {}
     }
@@ -139,10 +150,12 @@ export default {
     hostsArr: function () {
       let arr = []
       for (let item in this.hosts) {
-        arr.push({
-          ...this.hosts[item],
-          id: item
-        })
+        arr.push(Object.assign({}, {
+          id: item,
+          address: '',
+          ip: '',
+          tags: []
+        }, this.hosts[item]))
       }
       return arr || []
     },
@@ -243,7 +256,7 @@ export default {
      * 获取所有hosts
      */
     this.$socket.on('allHosts', (hosts) => {
-      this.hosts = hosts
+      this.hosts = Object.freeze(hosts)
     })
 
     /**
@@ -291,6 +304,18 @@ export default {
         this.$message.success('编辑成功')
       } else {
         this.$message.error(`编辑失败：${data.msg || ''}`)
+      }
+    })
+
+    /**
+     * 批量添加hosts
+     */
+    this.$socket.on('importHostsCb', (data) => {
+      if (data.state === 1) {
+        this.hosts = data.hosts
+        this.$message.success('添加成功')
+      } else {
+        this.$message.error(`添加失败：${data.msg || ''}`)
       }
     })
   },
@@ -416,7 +441,49 @@ export default {
      * 点击批量导入中的添加
      */
     handleClickImportModalOk: function () {
+      try {
+        this.importHostsModal = false
+        let cont = this.importHosts
 
+        if (!cont) return
+
+        this.importHosts = ''
+
+        let ipReg = /(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})(\.(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})){3}/
+
+        // 按行分割
+        let data = cont.split(/[\n\r]/g)
+
+        // 过滤掉空行
+        data = data.filter(item => {
+          return !!item && item.match(ipReg)
+        })
+
+        // 格式化每行为host对象
+        data = data.map(item => {
+          let ip = ''
+          let address = item.replace(ipReg, function (word) {
+            ip = word
+            return ''
+          }).replace(/[\s]/g, '')
+
+          address = address.replace(/#/g, '')
+
+          return {
+            ip,
+            address,
+            active: false
+          }
+        })
+
+        if (data && data.length > 0) {
+          this.$socket.emit('importHosts', {
+            hosts: data
+          })
+        }
+      } catch (e) {
+        console.error(e)
+      }
     }
 
   }

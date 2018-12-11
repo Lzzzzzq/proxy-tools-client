@@ -108,6 +108,28 @@ const init = (port) => {
         })
       }
     })
+
+    // 批量引入hosts
+    socket.on('importHosts', async ({hosts}) => {
+      let cbName = 'importHostsCb'
+      if (!hosts || hosts.length === 0) {
+        socket.emit(cbName, {
+          state: 0,
+          msg: '无数据'
+        })
+      }
+      console.log(hosts)
+      try {
+        let data = await api.importHost(hosts)
+        socket.emit(cbName, data)
+      } catch (e) {
+        console.error(e)
+        socket.emit(cbName, {
+          state: 0,
+          msg: '服务端错误'
+        })
+      }
+    })
     console.log('new connect')
   })
 }

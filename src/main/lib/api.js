@@ -142,3 +142,38 @@ export const editHost = (host) => {
     }
   })
 }
+
+/**
+ * 批量添加hosts
+ * @param {Array} importHosts 批量引入的 hosts
+ */
+export const importHost = (importHosts) => {
+  return new Promise((resolve, reject) => {
+    try {
+      let hosts = data.getHosts()
+      let agiHosts = []
+      let insertIndex = []
+      for (let item in hosts) {
+        agiHosts.push(hosts[item].address + hosts[item].ip)
+      }
+      importHosts.map((item, index) => {
+        if (agiHosts.indexOf(item.address + item.ip) < 0) {
+          insertIndex.push(index)
+        }
+      })
+      insertIndex.map((item, index) => {
+        hosts[md5(Date.parse(new Date()) + index)] = {
+          ...importHosts[item],
+          active: false
+        }
+      })
+      data.setHosts(hosts)
+      resolve({
+        state: 1,
+        hosts: hosts
+      })
+    } catch (e) {
+      reject(e)
+    }
+  })
+}

@@ -42,22 +42,16 @@
         collapsed: false,
         nav: [
           {
-            name: 'hosts管理',
-            icon: 'inbox',
-            path: '/hostsMgr'
-          }, {
             name: '首页',
             icon: 'inbox',
             path: '/'
+          }, {
+            name: 'hosts管理',
+            icon: 'inbox',
+            path: '/hostsMgr'
           }
         ]
       }
-    },
-    mounted: function () {
-      console.log(this.$route)
-      this.$socket.on('welcome', () => {
-        console.log('welcome')
-      })
     }
   }
 </script>
