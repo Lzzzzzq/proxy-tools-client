@@ -1,12 +1,12 @@
 
 const path = require('path')
-// const os = require('os')
+const os = require('os')
 const fs = require('fs')
 
 class Data {
   constructor () {
-    // this.hostsPath = path.resolve(os.homedir(), 'ptHosts.json')
-    this.hostsPath = path.resolve('C:/Users/viruser.v-desktop/Desktop', 'ptHosts.json')
+    this.hostsPath = path.resolve(os.homedir(), 'ptHosts.json')
+    // this.hostsPath = path.resolve('C:/Users/viruser.v-desktop/Desktop', 'ptHosts.json')
     this.hosts = {}
     this.init()
   }
