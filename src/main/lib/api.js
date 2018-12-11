@@ -56,6 +56,13 @@ export const changeHostState = (id) => {
       let hosts = data.getHosts()
       if (hosts[id]) {
         hosts[id].active = !hosts[id].active
+        if (hosts[id].active) {
+          for (let item in hosts) {
+            if (item !== id && hosts[item].address === hosts[id].address && hosts[item].active) {
+              hosts[item].active = false
+            }
+          }
+        }
         data.setHosts(hosts)
         resolve({
           state: 1,

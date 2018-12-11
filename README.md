@@ -1,6 +1,6 @@
 # proxy-tools-client
 
-> An electron-vue project
+> proxy tools client
 
 #### Build Setup
 
