@@ -1,3 +1,4 @@
+import data from './data'
 const url = require('url')
 const http = require('http')
 
@@ -10,6 +11,13 @@ const request = (cReq, cRes) => {
     path: u.path,
     method: cReq.method,
     headers: cReq.headers
+  }
+
+  let hosts = data.getHosts()
+  for (let item in hosts) {
+    if (hosts[item].address === options.hostname && hosts[item].active) {
+      options.hostname = hosts[item].ip
+    }
   }
 
   var pReq = http.request(options, function (pRes) {
