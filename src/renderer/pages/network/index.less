@@ -1,0 +1,65 @@
+
+.networkWrap {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 24px;
+  bottom: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .networkFlexWrap {
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+
+    .networkOpe {
+      flex: 0 0 80px;
+      height: 80px;
+    }
+    .networkMain {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    td {
+      padding: 0 15px;
+    }
+    thead {
+      height: 54px;
+      line-height: 54px;
+      background-color: #fafafa;
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: 500;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    tbody {
+      tr {
+        height: 65px;
+        transition: all 0.3s;
+
+        &:hover {
+          background-color: rgba(24, 144, 255, 0.1);
+          
+        }
+      }
+    }
+  }
+  .networkSingleLine {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .w200 {
+    max-width: 200px;
+  }
+  .w300 {
+    max-width: 300px;
+  }
+}

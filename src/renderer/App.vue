@@ -25,7 +25,7 @@
               @click="()=> collapsed = !collapsed"
             />
           </a-layout-header>
-          <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', overflow: 'auto' }">
+          <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', overflow: 'auto', position: 'relative' }">
             <keep-alive>
               <router-view></router-view>
             </keep-alive>
@@ -48,12 +48,16 @@ export default {
       nav: [
         {
           name: '首页',
-          icon: 'inbox',
+          icon: 'home',
           path: '/'
         }, {
           name: 'hosts管理',
           icon: 'inbox',
           path: '/hostsMgr'
+        }, {
+          name: '网络请求',
+          icon: 'link',
+          path: '/network'
         }
       ]
     }

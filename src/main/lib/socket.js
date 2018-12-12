@@ -3,6 +3,9 @@ import httpsProxy from './connect'
 import * as api from './api'
 const http = require('http')
 const socket = require('socket.io')
+const EventEmitter = require('events').EventEmitter
+
+global.event = new EventEmitter()
 
 const init = (port) => {
   const app = http.createServer()
@@ -15,6 +18,16 @@ const init = (port) => {
   app.on('connect', httpsProxy)
 
   io.on('connection', (socket) => {
+    // http请求
+    global.event.on('httpReq', (req) => {
+      socket.emit('httpReq', req)
+    })
+
+    // https请求
+    global.event.on('httpsReq', (req) => {
+      socket.emit('httpsReq', req)
+    })
+
     // 获取全部 hosts
     socket.on('getAllHosts', async () => {
       try {

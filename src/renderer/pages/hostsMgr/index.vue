@@ -224,13 +224,13 @@ export default {
           dataIndex: 'address',
           title: '地址',
           filters: this.addressFilter,
-          onFilter: (value, host) => host.address.includes(value)
+          onFilter: (value, host) => host.address === value
         }, {
           key: 'ip',
           dataIndex: 'ip',
           title: 'ip',
           filters: this.ipFilter,
-          onFilter: (value, host) => host.ip.includes(value)
+          onFilter: (value, host) => host.ip === value
         }, {
           key: 'tags',
           title: '标签',

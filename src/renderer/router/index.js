@@ -14,6 +14,11 @@ export default new Router({
       component: require('@/pages/hostsMgr').default
     },
     {
+      path: '/network',
+      name: 'network',
+      component: require('@/pages/network').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
