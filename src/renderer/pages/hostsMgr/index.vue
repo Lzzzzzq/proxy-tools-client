@@ -100,7 +100,6 @@
         </a-tag>
       </span>
       <span slot="action" slot-scope="text, item">
-        <a-button type="danger" style="margin-right: 20px;" @click="handleDeleteHost(item.id)">删除</a-button>
         <a-button style="margin-right: 20px;" @click="handleEditHost(item)">编辑</a-button>
         <a-button 
           class="copyBtn"
@@ -111,6 +110,7 @@
         >
           复制到剪切板
         </a-button>
+        <a-button type="danger" style="margin-right: 20px;" @click="handleDeleteHost(item.id)">删除</a-button>
       </span>
     </a-table>
   </div>

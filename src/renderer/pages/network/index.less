@@ -41,7 +41,7 @@
     }
     tbody {
       tr {
-        height: 65px;
+        height: 50px;
         transition: all 0.3s;
 
         &:hover {
@@ -61,5 +61,17 @@
   }
   .w300 {
     max-width: 300px;
+  }
+  .trEnter {
+    animation: trEnter 1s;
+  }
+}
+
+@keyframes trEnter {
+  from {
+    background-color: rgba(24, 144, 255, 0.3);
+  }
+  to {
+    background-color: rgba(24, 144, 255, 0);
   }
 }

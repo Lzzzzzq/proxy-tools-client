@@ -1,11 +1,29 @@
 <template>
   <div class="networkWrap">
+    <a-drawer
+      title="更多设置"
+      placement="right"
+      :closable="false"
+      @close="settingDrawer = false"
+      :visible="settingDrawer"
+    >
+      <p>
+        <a-button type="primary" @click="handleClickClean" style="margin-right: 15px">清空全部</a-button>
+      </p>
+      <p>
+        <a-switch style="margin-right: 10px" v-model="httpsCollect" checkedChildren="Https" unCheckedChildren="Https"></a-switch>
+      </p>
+    </a-drawer>
     <div class="networkFlexWrap">
       <div class="networkOpe">
-        <a-button type="primary" @click="handleClickClean" style="margin-right: 15px">清空</a-button>
+        <a-input placeholder="url过滤" v-model="filterUrl">
+          <div slot="addonAfter" style="cursor: pointer" @click="settingDrawer = true">
+            <a-icon type="setting" style="margin-right: 6px"/>更多设置
+          </div>
+        </a-input>
         <a-divider />
       </div>
-      <div class="networkMain" ref="netWrap">
+      <div class="networkMain" ref="netWrap" @scroll="handleScroll">
         <table>
           <thead>
             <tr>
@@ -17,7 +35,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in network" :key="item.hash">
+            <tr class="trEnter" v-for="(item, index) in network" :key="item.hash" v-if="item.hostname.match(filterUrl) || item.path.match(filterUrl)">
               <td>{{item.protocol || ''}}</td>
               <td>{{item.method || ''}}</td>
               <td>
@@ -49,14 +67,18 @@ export default {
   data () {
     return {
       network: [],
-      hashList: {}
+      hashList: {},
+      filterUrl: '',
+      settingDrawer: false,
+      httpsCollect: true,
+      keepBottom: true
     }
   },
   watch: {
     network: {
       handler: function () {
         let $wrap = this.$refs.netWrap
-        if ($wrap) {
+        if ($wrap && this.keepBottom) {
           this.$nextTick(() => {
             $wrap.scrollTop = $wrap.scrollHeight
           })
@@ -72,27 +94,30 @@ export default {
     socketListener: function () {
       this.$socket.on('httpReq', ({req, hash}) => {
         // req.id = hash
-        console.log(req)
-        this.network.push({
-          hash,
-          protocol: 'http',
-          method: req.method || 'get',
-          hostname: req.fromHost || req.hostname || '',
-          path: req.path || '',
-          ip: req.fromHost ? req.hostname : '' || ''
+        window.requestAnimationFrame(() => {
+          this.network.push({
+            hash,
+            protocol: 'http',
+            method: req.method || 'get',
+            hostname: req.fromHost || req.hostname || '',
+            path: req.path || '',
+            ip: req.fromHost ? req.hostname : '' || ''
+          })
         })
         // this.hashList[hash] = req
       })
       this.$socket.on('httpsReq', ({req, hash}) => {
         // req.id = hash
-        console.log(req)
-        this.network.push({
-          hash,
-          protocol: 'https',
-          method: req.method || 'connect',
-          hostname: req.fromHost || req.hostname || '',
-          path: req.path || '',
-          ip: req.fromHost ? req.hostname : '' || ''
+        if (!this.httpsCollect) return
+        window.requestAnimationFrame(() => {
+          this.network.push({
+            hash,
+            protocol: 'https',
+            method: req.method || 'CONNECT',
+            hostname: req.fromHost || req.hostname || '',
+            path: req.path || '',
+            ip: req.fromHost ? req.hostname : '' || ''
+          })
         })
         // this.hashList[hash] = req
       })
@@ -103,6 +128,20 @@ export default {
      */
     handleClickClean: function () {
       this.network = []
+    },
+
+    /**
+     * 表格内滚动滑轮
+     */
+    handleScroll: function () {
+      let $wrap = this.$refs.netWrap
+      if ($wrap) {
+        if ($wrap.scrollHeight === ($wrap.scrollTop + $wrap.clientHeight)) {
+          this.keepBottom = true
+        } else {
+          this.keepBottom = false
+        }
+      }
     }
   }
 }
