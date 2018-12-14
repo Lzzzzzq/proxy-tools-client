@@ -95,7 +95,7 @@ export default {
       this.$socket.on('httpReq', ({req, hash}) => {
         // req.id = hash
         window.requestAnimationFrame(() => {
-          this.network.push({
+          this.networkPush({
             hash,
             protocol: 'http',
             method: req.method || 'get',
@@ -110,7 +110,7 @@ export default {
         // req.id = hash
         if (!this.httpsCollect) return
         window.requestAnimationFrame(() => {
-          this.network.push({
+          this.networkPush({
             hash,
             protocol: 'https',
             method: req.method || 'CONNECT',
@@ -142,6 +142,16 @@ export default {
           this.keepBottom = false
         }
       }
+    },
+
+    /**
+     * 追加到network列表
+     */
+    networkPush: function (data) {
+      if (this.network.length > 100) {
+        this.network.splice(0, 50)
+      }
+      this.network.push(Object.freeze(data))
     }
   }
 }
