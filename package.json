@@ -5,6 +5,7 @@
   "license": "MIT",
   "description": "基于pkg的proxy-tools",
   "scripts": {
+    "dev": "set NODE_ENV=development& node app.js",
     "build:win": "pkg -o dist/proxy-tools.win -t win package.json",
     "build:win32": "pkg -o dist/proxy-tools.win32 -t win-x86 package.json"
   },
