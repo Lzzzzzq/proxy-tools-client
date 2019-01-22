@@ -55,6 +55,10 @@ export default {
           icon: 'inbox',
           path: '/hostsMgr'
         }, {
+          name: '文件代理',
+          icon: 'file-text',
+          path: '/fileAgentMgr'
+        }, {
           name: '网络请求',
           icon: 'link',
           path: '/network'
