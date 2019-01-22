@@ -14,6 +14,11 @@ export default new Router({
       component: require('@/pages/hostsMgr').default
     },
     {
+      path: '/fileAgentMgr',
+      name: 'file-agent-mgr',
+      component: require('@/pages/fileAgentMgr').default
+    },
+    {
       path: '/network',
       name: 'network',
       component: require('@/pages/network').default
