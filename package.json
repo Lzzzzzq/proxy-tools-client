@@ -1,6 +1,6 @@
 {
   "name": "proxy-tools-client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "index.js",
   "license": "MIT",
   "description": "基于pkg的proxy-tools",
@@ -12,6 +12,7 @@
   "dependencies": {
     "carlo": "^0.9.43",
     "md5": "^2.2.1",
+    "mime": "^2.4.0",
     "portfinder": "^1.0.20",
     "socket.io": "^2.2.0"
   },
