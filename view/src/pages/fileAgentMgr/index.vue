@@ -140,6 +140,12 @@ export default {
     }
   },
   mounted: function () {
+    this.$notification.info({
+      message: '提示',
+      description: '文件代理功能暂时仅支持http',
+      duration: 5
+    })
+
     this.$socket.emit('getAllFileAgent')
 
     this.$socket.on('allFileAgent', (agents) => {
