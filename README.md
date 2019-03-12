@@ -21,3 +21,7 @@
 ### 使用方式
 
 **将本地网络请求代理到 proxy-tools**，可以通过浏览器插件 [SwitchyOmega](https://www.switchyomega.com/) 配置网页请求的代理，或在fiddler中进行配置 Tools -> Options -> Gateway -> Manual Proxy Configuration ，proxy-tools 默认为localhost:3000，具体端口号请参考软件控制台中显示的 Port -> *。
+
+### GUI
+
+![screenshot.jpeg](https://i.loli.net/2019/03/12/5c87a7cb9bdf0.jpeg)
