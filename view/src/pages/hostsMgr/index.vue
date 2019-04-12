@@ -84,11 +84,11 @@
     </div>
     <a-divider />
 
-    <a-table :columns="columns" :dataSource="hostsArr">
+    <a-table :rowKey="(record, index) => index" :columns="columns" :dataSource="hostsArr">
       <span slot="active" slot-scope="active, item">
         <a-switch v-model="active" @change='handleChangeHostState(item)'/>
       </span>
-      <span slot="title"></span>
+      <!-- <span slot="title"></span> -->
       <span slot="tags" slot-scope="item">
         <a-tag
           color="#2db7f5"

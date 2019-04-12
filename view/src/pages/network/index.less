@@ -1,4 +1,22 @@
+.tr {
+  text-align: right;
+}
+.tc {
+  text-align: center;
+}
 
+.networkListTitle {
+  border-bottom: 1px solid #e8e8e8;
+  box-sizing: border-box;
+
+  .networkListTitleItem {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    // text-align: left;
+    color: rgba(0, 0, 0, 0.85);
+  }
+}
 .networkWrap {
   position: absolute;
   left: 24px;
@@ -20,11 +38,32 @@
     }
     .networkMain {
       flex: 1;
-      overflow: auto;
+      // overflow: auto;
       position: relative;
     }
   }
 
+  .networkItemActive {
+    color: #1890ff;
+  }
+  .networkListItem {
+    height: 40px;
+    line-height: 40px;
+    transition: all 0.3s;
+    display: flex;
+    border-bottom: 1px solid #e8e8e8;
+
+    &:hover {
+      background-color: rgba(24, 144, 255, 0.1);
+    }
+
+    .singleLine {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 0 16px;
+    }
+  }
   table {
     width: 100%;
 
@@ -41,13 +80,6 @@
     }
     tbody {
       tr {
-        height: 50px;
-        transition: all 0.3s;
-
-        &:hover {
-          background-color: rgba(24, 144, 255, 0.1);
-          
-        }
       }
     }
   }

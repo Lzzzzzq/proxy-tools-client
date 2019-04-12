@@ -45,7 +45,7 @@
     </div>
     <a-divider />
 
-    <a-table :columns="columns" :dataSource="agentsArr">
+    <a-table :rowKey="(record, index) => index" :columns="columns" :dataSource="agentsArr">
       <span slot="active" slot-scope="active, item">
         <a-switch v-model="active" @change='handleChangeState(item)'/>
       </span>
