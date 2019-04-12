@@ -10,6 +10,9 @@ import io from 'socket.io-client'
 (async () => {
   let data = {}
 
+  // 防止开发阶段控制台报错
+  if (!window.env) window.env = function () {}
+
   try {
     // eslint-disable-next-line
     data = await env()

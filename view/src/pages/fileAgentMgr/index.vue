@@ -13,7 +13,7 @@
           <a-auto-complete placeholder="请输入地址" v-model="addAddress" style="width: 100%"/>
         </div>
         <div class="agentsMgrInputWrap">
-          <a-auto-complete placeholder="请输入代理" v-model="addAgent" style="width: 100%"/>
+          <a-auto-complete placeholder="请选择要代理的文件" v-model="addAgent" style="flex: 1; margin-right: 10px"/>
         </div>
         <template slot="footer">
           <a-button key="back" @click="handleCancelAdd">取消</a-button>
@@ -33,7 +33,7 @@
           <a-auto-complete placeholder="请输入地址" v-model="editAddress" style="width: 100%"/>
         </div>
         <div class="agentsMgrInputWrap">
-          <a-auto-complete placeholder="请输入代理" v-model="editAgent" style="width: 100%"/>
+          <a-auto-complete placeholder="请选择要代理的文件" v-model="editAgent" style="flex: 1; margin-right: 10px"/>
         </div>
         <template slot="footer">
           <a-button key="back" @click="handleCancelEdit">取消</a-button>
@@ -50,25 +50,21 @@
         <a-switch v-model="active" @change='handleChangeState(item)'/>
       </span>
       <span slot="address" slot-scope="address, item">
-        <a-tooltip placement="topLeft" >
-          <template slot="title">
-            <span>{{address}}</span>
-          </template>
-          <div class="maxLengthWrap">
-            {{address}}
-          </div>
-        </a-tooltip>
+        <div class="maxLengthWrap">
+          {{item.address}}
+        </div>
+        <div class="agentIcon">
+          <a-icon type="arrow-down" />
+        </div>
+        <div class="maxLengthWrap">
+          {{item.agent}}
+        </div>
       </span>
-      <span slot="agent" slot-scope="agent, item">
-        <a-tooltip placement="topLeft" >
-          <template slot="title">
-            <span>{{agent}}</span>
-          </template>
-          <div class="maxLengthWrap">
-            {{agent}}
-          </div>
-        </a-tooltip>
-      </span>
+      <!-- <span slot="agent" slot-scope="agent, item">
+        <div class="maxLengthWrap">
+          {{agent}}
+        </div>
+      </span> -->
       <span slot="action" slot-scope="text, item">
         <a-button style="margin-right: 20px;" @click="handleEditFileAgent(item)">编辑</a-button>
         <a-button type="danger" style="margin-right: 20px;" @click="handleDeleteFileAgent(item.id)">删除</a-button>
@@ -125,11 +121,6 @@ export default {
           dataIndex: 'address',
           title: '地址',
           scopedSlots: { customRender: 'address' }
-        }, {
-          key: 'agent',
-          dataIndex: 'agent',
-          title: '代理到',
-          scopedSlots: { customRender: 'agent' }
         }, {
           key: 'action',
           title: '操作',
@@ -213,6 +204,8 @@ export default {
      */
     handleCancelAdd: function () {
       this.addOpeModal = false
+      this.addAddress = ''
+      this.addAgent = ''
     },
 
     /**
@@ -220,6 +213,8 @@ export default {
      */
     handleCancelEdit: function () {
       this.editOpeModal = false
+      this.editAddress = ''
+      this.editAgent = ''
     },
 
     /**
