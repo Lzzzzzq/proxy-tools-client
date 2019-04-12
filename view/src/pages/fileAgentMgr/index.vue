@@ -13,7 +13,7 @@
           <a-auto-complete placeholder="请输入地址" v-model="addAddress" style="width: 100%"/>
         </div>
         <div class="agentsMgrInputWrap">
-          <a-auto-complete placeholder="请选择要代理的文件" v-model="addAgent" style="flex: 1; margin-right: 10px"/>
+          <a-auto-complete placeholder="请选择要代理的文件" v-model="addAgent" style="flex: 1"/>
         </div>
         <template slot="footer">
           <a-button key="back" @click="handleCancelAdd">取消</a-button>
@@ -33,7 +33,7 @@
           <a-auto-complete placeholder="请输入地址" v-model="editAddress" style="width: 100%"/>
         </div>
         <div class="agentsMgrInputWrap">
-          <a-auto-complete placeholder="请选择要代理的文件" v-model="editAgent" style="flex: 1; margin-right: 10px"/>
+          <a-auto-complete placeholder="请选择要代理的文件" v-model="editAgent" style="flex: 1"/>
         </div>
         <template slot="footer">
           <a-button key="back" @click="handleCancelEdit">取消</a-button>
