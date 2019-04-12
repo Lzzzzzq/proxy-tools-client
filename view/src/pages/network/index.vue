@@ -23,72 +23,75 @@
         </a-input>
         <a-divider />
       </div>
-      <div class="networkMain" ref="netWrap" @scroll="handleScroll">
-        <table>
-          <thead>
-            <tr>
-              <td>protocol</td>
-              <td>method</td>
-              <td>hostname</td>
-              <td>path</td>
-              <td>ip</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="trEnter" v-for="(item) in network" :key="item.hash" v-if="item.hostname.match(filterUrl) || item.path.match(filterUrl)">
-              <td>{{item.protocol || ''}}</td>
-              <td>{{item.method || ''}}</td>
-              <td>
-                <div class="networkSingleLine w200">
-                  {{item.hostname || ''}}
-                </div>
-              </td>
-              <td>
-                <div class="networkSingleLine w300">
-                  {{item.path || ''}}
-                </div>
-              </td>
-              <td>
-                <div class="networkSingleLine w200">
-                  {{item.ip || ''}}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="networkListTitle" style="display: flex">
+        <div class="networkListTitleItem" style="flex: 0 0 100px">协议</div>
+        <div class="networkListTitleItem" style="flex: 0 0 100px">方法</div>
+        <div class="networkListTitleItem" style="flex: 1">域名</div>
+        <div class="networkListTitleItem" style="flex: 1">路径</div>
+        <div class="networkListTitleItem" style="flex: 0 0 150px">ip</div>
+      </div>
+      <div class="networkMain" ref="netWrap">
+        <VirtualList
+          :size="itemSize"
+          :remain="remain"
+          style="width: 100%"
+          :debounce="20"
+          :onscroll="handleScroll"
+          ref="virList"
+          :tobottom="handleToBottom"
+          class="virList"
+        >
+          <div class="networkListItem" :class="item.ip ? 'networkItemActive' : ''" v-for="(item, index) in network" :key="index">
+            <div class="singleLine" style="flex: 0 0 100px">{{item.protocol}}</div>
+            <div class="singleLine" style="flex: 0 0 100px">{{item.method}}</div>
+            <div class="singleLine" style="flex: 1">{{item.hostname}}</div>
+            <div class="singleLine" style="flex: 1" :title="item.path">{{item.path}}</div>
+            <div class="singleLine tc" style="flex: 0 0 150px">{{item.ip}}</div>
+          </div>
+        </VirtualList>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import VirtualList from 'vue-virtual-scroll-list'
+
 export default {
   name: 'Network',
+  components: {
+    VirtualList
+  },
   data () {
     return {
       network: [],
       hashList: {},
       filterUrl: '',
       settingDrawer: false,
-      httpsCollect: true,
-      keepBottom: true
+      httpsCollect: false,
+      keepBottom: true,
+      remain: 0,
+      itemSize: 40
     }
   },
   watch: {
     network: {
       handler: function () {
-        let $wrap = this.$refs.netWrap
-        if ($wrap && this.keepBottom) {
-          this.$nextTick(() => {
-            $wrap.scrollTop = $wrap.scrollHeight
-          })
-        }
       },
       immediate: true
     }
   },
   mounted: function () {
     this.socketListener()
+    this.getContentHeight()
+  },
+  updated: function () {
+    let $wrap = document.getElementsByClassName('virList')[0]
+    if ($wrap && this.keepBottom) {
+      window.requestAnimationFrame(() => {
+        $wrap.scrollTop = $wrap.scrollHeight
+      })
+    }
   },
   methods: {
     socketListener: function () {
@@ -134,24 +137,32 @@ export default {
      * 表格内滚动滑轮
      */
     handleScroll: function () {
-      let $wrap = this.$refs.netWrap
-      if ($wrap) {
-        if ($wrap.scrollHeight === ($wrap.scrollTop + $wrap.clientHeight)) {
-          this.keepBottom = true
-        } else {
-          this.keepBottom = false
-        }
+      if (this.keepBottom) {
+        this.keepBottom = false
       }
+    },
+
+    handleToBottom: function () {
+      this.keepBottom = true
     },
 
     /**
      * 追加到network列表
      */
     networkPush: function (data) {
-      if (this.network.length > 100) {
-        this.network.splice(0, 50)
-      }
-      this.network.push(Object.freeze(data))
+      if (!data.hostname.match(this.filterUrl) && !data.path.match(this.filterUrl)) return
+      window.requestAnimationFrame(() => {
+        this.network.push(Object.freeze(data))
+      })
+    },
+
+    /**
+     * 获取正文高度
+     */
+    getContentHeight: function () {
+      setTimeout(() => {
+        this.remain = this.$refs.netWrap.clientHeight / this.itemSize
+      }, 500)
     }
   }
 }
