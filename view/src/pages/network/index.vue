@@ -31,36 +31,39 @@
         <div class="networkListTitleItem" style="flex: 0 0 150px">ip</div>
       </div>
       <div class="networkMain" ref="netWrap">
-        <VirtualList
-          :size="itemSize"
-          :remain="remain"
-          style="width: 100%"
-          :debounce="20"
-          :onscroll="handleScroll"
+        <RecycleScroller
           ref="virList"
-          :tobottom="handleToBottom"
           class="virList"
+          :items="filterRes"
+          :item-size="itemSize"
+          key-field="hash"
+          @scroll.native="handleScroll"
+          @visible="handleVisible"
+          @hidden="handleHidden"
         >
-          <div class="networkListItem" :class="item.ip ? 'networkItemActive' : ''" v-for="(item, index) in network" :key="index">
-            <div class="singleLine" style="flex: 0 0 100px">{{item.protocol}}</div>
-            <div class="singleLine" style="flex: 0 0 100px">{{item.method}}</div>
-            <div class="singleLine" style="flex: 1">{{item.hostname}}</div>
-            <div class="singleLine" style="flex: 1" :title="item.path">{{item.path}}</div>
-            <div class="singleLine tc" style="flex: 0 0 150px">{{item.ip}}</div>
-          </div>
-        </VirtualList>
+          <template v-slot="{ item }">
+            <div class="networkListItem" :class="item.ip ? 'networkItemActive' : ''">
+              <div class="singleLine" style="flex: 0 0 100px">{{item.protocol}}</div>
+              <div class="singleLine" style="flex: 0 0 100px">{{item.method}}</div>
+              <div class="singleLine" style="flex: 1">{{item.hostname}}</div>
+              <div class="singleLine" style="flex: 1" :title="item.path">{{item.path}}</div>
+              <div class="singleLine tc" style="flex: 0 0 150px">{{item.ip}}</div>
+            </div>
+          </template>
+        </RecycleScroller>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import VirtualList from 'vue-virtual-scroll-list'
+import { RecycleScroller } from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 export default {
   name: 'Network',
   components: {
-    VirtualList
+    RecycleScroller
   },
   data () {
     return {
@@ -70,26 +73,26 @@ export default {
       settingDrawer: false,
       httpsCollect: false,
       keepBottom: true,
-      remain: 0,
-      itemSize: 40
-    }
-  },
-  watch: {
-    network: {
-      handler: function () {
-      },
-      immediate: true
+      itemSize: 40,
+      leave: true
     }
   },
   mounted: function () {
     this.socketListener()
-    this.getContentHeight()
+  },
+  computed: {
+    filterRes: function () {
+      const { filterUrl, network } = this
+      if (!filterUrl) return network
+      const lowerCaseSearch = filterUrl.toLowerCase()
+      return network.filter(i => i.hostname.toLowerCase().includes(lowerCaseSearch) || i.path.toLowerCase().includes(lowerCaseSearch))
+    }
   },
   updated: function () {
     let $wrap = document.getElementsByClassName('virList')[0]
     if ($wrap && this.keepBottom) {
       window.requestAnimationFrame(() => {
-        $wrap.scrollTop = $wrap.scrollHeight
+        this.$refs.virList.scrollToItem(this.network.length)
       })
     }
   },
@@ -136,33 +139,38 @@ export default {
     /**
      * 表格内滚动滑轮
      */
-    handleScroll: function () {
-      if (this.keepBottom) {
+    handleScroll: function (e) {
+      const offset = e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight
+      if (offset > 0) {
         this.keepBottom = false
+      } else {
+        this.keepBottom = true
       }
-    },
-
-    handleToBottom: function () {
-      this.keepBottom = true
     },
 
     /**
      * 追加到network列表
      */
     networkPush: function (data) {
+      if (this.leave) return
       if (!data.hostname.match(this.filterUrl) && !data.path.match(this.filterUrl)) return
-      window.requestAnimationFrame(() => {
-        this.network.push(Object.freeze(data))
-      })
+      this.network.push(Object.freeze(data))
     },
 
     /**
-     * 获取正文高度
+     * 列表显示
      */
-    getContentHeight: function () {
-      setTimeout(() => {
-        this.remain = this.$refs.netWrap.clientHeight / this.itemSize
-      }, 500)
+    handleVisible: function () {
+      this.leave = false
+      this.keepBottom = true
+      this.$refs.virList.scrollToItem(this.network.length)
+    },
+
+    /**
+     * 列表隐藏
+     */
+    handleHidden: function () {
+      this.leave = true
     }
   }
 }
@@ -170,4 +178,7 @@ export default {
 
 <style lang='less'>
 @import './index.less';
+.virList {
+  height: 100%;
+}
 </style>

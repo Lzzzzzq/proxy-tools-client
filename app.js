@@ -10,7 +10,11 @@ const init = async () => {
     portfinder.getPort(async function (err, port) {
       if (err) { throw err }
 
+      console.log('')
       console.log(`Port -> ${port}`)
+      console.log('')
+      console.log('请勿关闭当前窗口')
+      console.log('')
 
       process.env.socketPort = port
       
@@ -39,7 +43,7 @@ const init = async () => {
       }
     })
   } catch (e) {
-    console.log('Error: ', e)
+    // console.log('Error: ', e)
   }
 
 }
@@ -47,6 +51,6 @@ const init = async () => {
 init()
 
 process.on("uncaughtException", function (err) {
-  console.error('An uncaught error occurred!');
-  console.error(err.stack);
+  // console.error('An uncaught error occurred!');
+  // console.error(err.stack);
 })
