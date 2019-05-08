@@ -9,13 +9,13 @@
         :maskClosable="false"
         @cancel="handleCancelAdd"
       >
-        <div class="hostsMgrInputWrap">
+        <div class="hostsMgrInputWrap" title="地址">
           <a-auto-complete placeholder="请输入地址" v-model="addAddress" style="width: 100%" :dataSource="addressFilter"/>
         </div>
-        <div class="hostsMgrInputWrap">
+        <div class="hostsMgrInputWrap" title="ip">
           <a-auto-complete placeholder="请输入ip" v-model="addIp" style="width: 100%" :dataSource="ipFilter"/>
         </div>
-        <div class="hostsMgrInputWrap">
+        <div class="hostsMgrInputWrap" title="标签">
           <a-select
             mode="tags"
             style="width: 100%"
@@ -24,6 +24,9 @@
           >
             <a-select-option v-for="(item) in tagsMap" :key="item">{{item}}</a-select-option>
           </a-select>
+        </div>
+        <div class="hostsMgrInputWrap" title="权重 (用于排序)">
+          <a-input-number style="width: 100%" :min="1" v-model="addWeight" @blur="parseInt(addWeight) !== addWeight ? addWeight = 1 : false" />
         </div>
         <template slot="footer">
           <a-button key="back" @click="handleCancelAdd">取消</a-button>
@@ -39,13 +42,13 @@
         :maskClosable="false"
         @cancel="handleCancelEdit"
       >
-        <div class="hostsMgrInputWrap">
+        <div class="hostsMgrInputWrap" title="地址">
           <a-auto-complete placeholder="请输入地址" v-model="editAddress" style="width: 100%" :dataSource="addressFilter"/>
         </div>
-        <div class="hostsMgrInputWrap">
+        <div class="hostsMgrInputWrap" title="ip">
           <a-auto-complete placeholder="请输入ip" v-model="editIp" style="width: 100%" :dataSource="ipFilter"/>
         </div>
-        <div class="hostsMgrInputWrap">
+        <div class="hostsMgrInputWrap" title="标签">
           <a-select
             mode="tags"
             style="width: 100%"
@@ -54,6 +57,9 @@
           >
             <a-select-option v-for="(item) in tagsMap" :key="item">{{item}}</a-select-option>
           </a-select>
+        </div>
+        <div class="hostsMgrInputWrap" title="权重 (用于排序)">
+          <a-input-number style="width: 100%" :min="1" v-model="editWeight" @blur="parseInt(editWeight) !== editWeight ? editWeight = 1 : false" />
         </div>
         <template slot="footer">
           <a-button key="back" @click="handleCancelEdit">取消</a-button>
@@ -99,8 +105,11 @@
           {{tagItem}}
         </a-tag>
       </span>
+      <span slot="weight" slot-scope="weight, item">
+        {{weight || 1}}
+      </span>
       <span slot="action" slot-scope="text, item">
-        <a-button 
+        <a-button
           style="margin-right: 20px;"
           @click="handleEditHost(item)"
           shape="circle"
@@ -117,7 +126,7 @@
           icon="copy"
           title="复制到剪切板"
         ></a-button>
-        <a-button 
+        <a-button
           type="danger"
           shape="circle"
           icon="delete"
@@ -145,12 +154,14 @@ export default {
       addAddress: '',
       addIp: '',
       addTags: [],
+      addWeight: 1,
 
       // 编辑 host modal 中输入框内容
       editId: '',
       editAddress: '',
       editIp: '',
       editTags: [],
+      editWeight: 1,
 
       // 批量引入 hosts modal 中输入框内容
       importHosts: '',
@@ -254,6 +265,12 @@ export default {
           onFilter: (value, host) => {
             return host.tags && host.tags.indexOf(value) >= 0
           }
+        }, {
+          key: 'weight',
+          dataIndex: 'weight',
+          title: '权重',
+          sorter: (a, b) => (a.weight !== undefined ? a.weight : 1) - (b.weight !== undefined ? b.weight : 1),
+          scopedSlots: { customRender: 'weight' }
         }, {
           key: 'action',
           title: '操作',
@@ -376,14 +393,18 @@ export default {
       let address = this.addAddress
       let ip = this.addIp
       let tags = this.addTags
+      let weight = this.addWeight
+
       this.addHostModal = false
       this.addAddress = ''
       this.addIp = ''
       this.addTags = []
+      this.addWeight = 1
       this.$socket.emit('addHost', {
         address,
         ip,
-        tags
+        tags,
+        weight
       })
     },
 
@@ -436,6 +457,7 @@ export default {
       this.editIp = item.ip
       this.editTags = item.tags || []
       this.editHostModal = true
+      this.editWeight = item.weight || 1
     },
 
     /**
@@ -447,7 +469,8 @@ export default {
         address: this.editAddress,
         ip: this.editIp,
         tags: this.editTags || [],
-        id: this.editId
+        id: this.editId,
+        weight: this.editWeight
       })
     },
 
