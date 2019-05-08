@@ -100,17 +100,31 @@
         </a-tag>
       </span>
       <span slot="action" slot-scope="text, item">
-        <a-button style="margin-right: 20px;" @click="handleEditHost(item)">编辑</a-button>
+        <a-button 
+          style="margin-right: 20px;"
+          @click="handleEditHost(item)"
+          shape="circle"
+          icon="edit"
+          title="编辑"
+        ></a-button>
         <a-button
           class="copyBtn"
           type="primary"
+          shape="circle"
           style="margin-right: 20px;"
           @click="handleClickCopy(item)"
           :data-clipboard-text="`${item.ip} ${item.address}`"
-        >
-          复制到剪切板
-        </a-button>
-        <a-button type="danger" style="margin-right: 20px;" @click="handleDeleteHost(item.id)">删除</a-button>
+          icon="copy"
+          title="复制到剪切板"
+        ></a-button>
+        <a-button 
+          type="danger"
+          shape="circle"
+          icon="delete"
+          style="margin-right: 20px;"
+          @click="handleDeleteHost(item.id)"
+          title="删除"
+        ></a-button>
       </span>
     </a-table>
   </div>
